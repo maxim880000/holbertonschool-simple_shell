@@ -14,6 +14,7 @@ int main(int argc, char **argv)
 	ssize_t nread;
 	int interactive;
 	char *trimmed;
+	int exit_status = 0;
 
 	(void)argc;
 
@@ -38,9 +39,9 @@ int main(int argc, char **argv)
 
 		trimmed = trim_line(line);
 
-		execute_command(trimmed, argv[0]);
+		exit_status = execute_command(trimmed, argv[0]);
 	}
 
 	free(line);
-	return (0);
+	return (exit_status);
 }

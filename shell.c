@@ -29,8 +29,10 @@ char *trim_line(char *line)
  * execute_command - Executes a command
  * @line: Command line to execute
  * @shell_name: Shell name (argv[0])
+ *
+ * Return: Exit status of the command
  */
-void execute_command(char *line, char *shell_name)
+int execute_command(char *line, char *shell_name)
 {
 	pid_t pid;
 	int status;
@@ -38,7 +40,7 @@ void execute_command(char *line, char *shell_name)
 	static int cmd_count = 1;
 
 	if (line[0] == '\0')
-		return;
+		return (0);
 
 	argv[0] = line;
 	argv[1] = NULL;
@@ -48,7 +50,7 @@ void execute_command(char *line, char *shell_name)
 	if (pid == -1)
 	{
 		perror("fork");
-		return;
+		return (1);
 	}
 	else if (pid == 0)
 	{
@@ -65,5 +67,8 @@ void execute_command(char *line, char *shell_name)
 	}
 
 	cmd_count++;
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (0);
 }
 
