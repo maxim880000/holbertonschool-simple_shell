@@ -72,4 +72,3 @@ execute_command(char *line, char *shell_name)
 		return (WEXITSTATUS(status));
 	return (0);
 }
-
