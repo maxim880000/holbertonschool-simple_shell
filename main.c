@@ -1,72 +1,47 @@
 #include "shell.h"
 
 /**
- * trim_line - Removes leading and trailing whitespace
- * @line: Line to trim
+ * main - Entry point of the simple shell
+ * @argc: Number of arguments
+ * @argv: Array of arguments
  *
- * Return: Pointer to trimmed string
+ * Return: Exit status of last command
  */
-char *trim_line(char *line)
+int main(int argc, char **argv)
 {
-	char *end;
+	char *line = NULL;
+	size_t len = 0;
+	ssize_t nread;
+	int interactive;
+	char *trimmed;
+	int exit_status = 0;
 
-	while (*line == ' ' || *line == '\t' || *line == '\n')
-		line++;
+	(void)argc;
 
-	if (*line == '\0')
-		return (line);
+	interactive = isatty(STDIN_FILENO);
 
-	end = line + strlen(line) - 1;
-	while (end > line && (*end == ' ' || *end == '\t' || *end == '\n'))
-		end--;
-
-	*(end + 1) = '\0';
-
-	return (line);
-}
-
-/**
- * execute_command - Executes a command
- * @line: Command line to execute
- * @shell_name: Shell name (argv[0])
- * @cmd_count: Current command count
- *
- * Return: Exit status of the command
- */
-int execute_command(char *line, char *shell_name, int cmd_count)
-{
-	pid_t pid;
-	int status;
-	char *argv[2];
-
-	if (line[0] == '\0')
-		return (0);
-
-	argv[0] = line;
-	argv[1] = NULL;
-
-	pid = fork();
-
-	if (pid == -1)
+	while (1)
 	{
-		perror("fork");
-		return (1);
-	}
-	else if (pid == 0)
-	{
-		if (execve(line, argv, environ) == -1)
+		if (interactive)
 		{
-			fprintf(stderr, "%s: %d: %s: not found\n",
-					shell_name, cmd_count, line);
-			_exit(127);
+			printf("$ ");
+			fflush(stdout);
 		}
-	}
-	else
-	{
-		wait(&status);
+
+		nread = getline(&line, &len, stdin);
+
+		if (nread == -1)
+		{
+			if (interactive)
+				printf("\n");
+			break;
+		}
+
+		trimmed = trim_line(line);
+
+		exit_status = execute_command(trimmed, argv[0]);
 	}
 
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	return (0);
+	free(line);
+	return (exit_status);
 }
