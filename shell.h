@@ -10,8 +10,7 @@
 
 extern char **environ;
 
-int execute_command(char *line, char *shell_name);
+int execute_command(char *line, char *shell_name, int cmd_count);
 char *trim_line(char *line);
 
 #endif
-

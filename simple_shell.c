@@ -32,7 +32,8 @@ char *trim_line(char *line)
  *
  * Return: Exit status of the command
  */
-int execute_command(char *line, char *shell_name)
+int
+execute_command(char *line, char *shell_name)
 {
 	pid_t pid;
 	int status;
@@ -71,4 +72,3 @@ int execute_command(char *line, char *shell_name)
 		return (WEXITSTATUS(status));
 	return (0);
 }
-
