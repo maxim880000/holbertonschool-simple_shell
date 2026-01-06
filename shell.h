@@ -11,6 +11,7 @@
 extern char **environ;
 
 void execute_command(char *line, char *shell_name);
+char *trim_line(char *line);
 
 #endif
 

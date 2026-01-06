@@ -13,6 +13,7 @@ int main(int argc, char **argv)
 	size_t len = 0;
 	ssize_t nread;
 	int interactive;
+	char *trimmed;
 
 	(void)argc;
 
@@ -35,10 +36,9 @@ int main(int argc, char **argv)
 			break;
 		}
 
-		if (line[nread - 1] == '\n')
-			line[nread - 1] = '\0';
+		trimmed = trim_line(line);
 
-		execute_command(line, argv[0]);
+		execute_command(trimmed, argv[0]);
 	}
 
 	free(line);

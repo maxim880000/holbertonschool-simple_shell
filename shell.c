@@ -1,6 +1,31 @@
 #include "shell.h"
 
 /**
+ * trim_line - Removes leading and trailing whitespace
+ * @line: Line to trim
+ *
+ * Return: Pointer to trimmed string
+ */
+char *trim_line(char *line)
+{
+	char *end;
+
+	while (*line == ' ' || *line == '\t' || *line == '\n')
+		line++;
+
+	if (*line == '\0')
+		return (line);
+
+	end = line + strlen(line) - 1;
+	while (end > line && (*end == ' ' || *end == '\t' || *end == '\n'))
+		end--;
+
+	*(end + 1) = '\0';
+
+	return (line);
+}
+
+/**
  * execute_command - Executes a command
  * @line: Command line to execute
  * @shell_name: Shell name (argv[0])
