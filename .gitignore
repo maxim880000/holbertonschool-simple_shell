@@ -1,4 +1,13 @@
-v01/shell.h
-v01/main.c
-v01/README.md
-v01/shell.c
+# Version directories
+v0.1/
+v01/
+v0.2/
+v02/
+
+# Binaries
+hsh
+shell
+*/hsh
+*/shell
+*.out
+a.out
