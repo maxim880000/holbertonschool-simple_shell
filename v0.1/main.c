@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * main - Simple shell 0.3 - with PATH support
+ * main - Simple shell 0.1 - no PATH, no built-ins, no arguments
  * @argc: Argument count
  * @argv: Argument vector
  *
@@ -20,7 +20,7 @@ int main(int argc, char **argv)
 	{
 		if (interactive)
 		{
-			printf(":) ");
+			printf("#cisfun$ ");
 			fflush(stdout);
 		}
 
@@ -43,4 +43,3 @@ int main(int argc, char **argv)
 	free(line);
 	return (0);
 }
-
