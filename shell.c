@@ -7,6 +7,13 @@
  * @cmd: Command name
  */
 void print_command_error(char *shell_name, int cmd_count, char *cmd)
+ * execute_command - Executes a command with arguments and PATH support
+ * @line: The command line to execute
+ * @shell_name: Name of the shell program
+ *
+ * Return: 1 if shell should exit, 0 otherwise
+ */
+int execute_command(char *line, char *shell_name)
 {
 	fprintf(stderr, "%s: %d: %s: not found\n", shell_name, cmd_count, cmd);
 }
@@ -26,6 +33,15 @@ void execute_child_process(char *command_path, char **args,
 		print_command_error(shell_name, cmd_count, args[0]);
 		free(command_path);
 		exit(127);
+		free_args(args);
+		return (0);
+	}
+
+	if (is_builtin(args[0]))
+	{
+		status = execute_builtin(args);
+		free_args(args);
+		return (status);
 	}
 }
 
@@ -43,6 +59,14 @@ int fork_and_execute(char *command_path, char **args,
 {
 	pid_t pid;
 	int status;
+	command_path = find_in_path(args[0]);
+
+	if (command_path == NULL)
+	{
+		fprintf(stderr, "%s: No such file or directory\n", shell_name);
+		free_args(args);
+		return (0);
+	}
 
 	pid = fork();
 
@@ -102,4 +126,6 @@ int execute_command(char **args, char *shell_name, int *cmd_count)
 	status = fork_and_execute(command_path, args, shell_name, *cmd_count);
 	(*cmd_count)++;
 	return (status);
+
+	return (0);
 }
