@@ -130,3 +130,4 @@ char *find_in_path(char *command)
 
 	return (search_in_directories(path_copy, command));
 }
+

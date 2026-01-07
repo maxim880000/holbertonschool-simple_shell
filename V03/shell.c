@@ -4,10 +4,8 @@
  * execute_command - Executes a command with arguments and PATH support
  * @line: The command line to execute
  * @shell_name: Name of the shell program
- *
- * Return: 1 if shell should exit, 0 otherwise
  */
-int execute_command(char *line, char *shell_name)
+void execute_command(char *line, char *shell_name)
 {
 	pid_t pid;
 	int status;
@@ -19,14 +17,7 @@ int execute_command(char *line, char *shell_name)
 	if (args[0] == NULL)
 	{
 		free_args(args);
-		return (0);
-	}
-
-	if (is_builtin(args[0]))
-	{
-		status = execute_builtin(args);
-		free_args(args);
-		return (status);
+		return;
 	}
 
 	command_path = find_in_path(args[0]);
@@ -35,7 +26,7 @@ int execute_command(char *line, char *shell_name)
 	{
 		fprintf(stderr, "%s: No such file or directory\n", shell_name);
 		free_args(args);
-		return (0);
+		return;
 	}
 
 	pid = fork();
@@ -61,6 +52,5 @@ int execute_command(char *line, char *shell_name)
 		free(command_path);
 		free_args(args);
 	}
-
-	return (0);
 }
+

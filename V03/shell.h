@@ -13,12 +13,11 @@
 
 extern char **environ;
 
-int execute_command(char *line, char *shell_name);
+void execute_command(char *line, char *shell_name);
 char **parse_line(char *line);
 void free_args(char **args);
 char *_getenv(const char *name);
 char *find_in_path(char *command);
-int is_builtin(char *command);
-int execute_builtin(char **args);
 
 #endif
+
