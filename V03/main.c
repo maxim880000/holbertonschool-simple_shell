@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * main - Simple shell 0.4 - with exit built-in
+ * main - Simple shell 0.3 - with PATH support
  * @argc: Argument count
  * @argv: Argument vector
  *
@@ -13,7 +13,6 @@ int main(int argc, char **argv)
 	size_t len = 0;
 	ssize_t nread;
 	int interactive = isatty(STDIN_FILENO);
-	int should_exit;
 
 	(void)argc;
 
@@ -21,7 +20,7 @@ int main(int argc, char **argv)
 	{
 		if (interactive)
 		{
-			printf("($) ");
+			printf(":) ");
 			fflush(stdout);
 		}
 
@@ -38,13 +37,10 @@ int main(int argc, char **argv)
 			line[nread - 1] = '\0';
 
 		if (line[0] != '\0')
-		{
-			should_exit = execute_command(line, argv[0]);
-			if (should_exit)
-				break;
-		}
+			execute_command(line, argv[0]);
 	}
 
 	free(line);
 	return (0);
 }
+
