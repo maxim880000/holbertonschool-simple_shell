@@ -17,8 +17,6 @@ void print_environment(void)
 /**
  * is_builtin - Checks if a command is a built-in
  * @command: Command name
- * is_builtin - Checks if a command is a built-in
- * @command: The command to check
  *
  * Return: 1 if built-in, 0 otherwise
  */
@@ -28,7 +26,6 @@ int is_builtin(char *command)
 		return (1);
 	if (strcmp(command, "env") == 0)
 		return (1);
-
 	return (0);
 }
 
@@ -37,7 +34,6 @@ int is_builtin(char *command)
  * @args: Array of arguments
  *
  * Return: 256 if exit, 1 if executed, 0 otherwise
- * Return: 1 to indicate shell should exit, 0 otherwise
  */
 int execute_builtin(char **args)
 {
@@ -50,7 +46,5 @@ int execute_builtin(char **args)
 		print_environment();
 		return (1);
 	}
-		return (1);
-
 	return (0);
 }
