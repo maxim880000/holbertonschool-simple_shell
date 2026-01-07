@@ -1,0 +1,13 @@
+# Version directories
+v0.1/
+v01/
+v0.2/
+v02/
+
+# Binaries
+hsh
+shell
+*/hsh
+*/shell
+*.out
+a.out
