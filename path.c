@@ -3,18 +3,20 @@
 /**
  * _getenv - Gets an environment variable value
  * @name: Name of the environment variable
+ * This function searches the `environ` array (all environment variables
+ * in the form “NAME=VALUE”) for the variable whose name is `name`.
  *
  * Return: Value of the environment variable, or NULL if not found
  */
 char *_getenv(const char *name)
 {
 	int i = 0;
-	size_t name_len;
+	size_t name_len; /* lenght of search variable name + */
 
 	if (!name || !environ)
 		return (NULL);
 
-	name_len = strlen(name);
+	name_len = strlen(name); /* calcul lenght of name */
 
 	while (environ[i])
 	{

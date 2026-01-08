@@ -3,30 +3,30 @@
 /**
  * handle_exit - Handles the exit built-in
  * @args: Array of arguments
- * @line: Line buffer to free
+ * @line: Line typed by user read by getline
  * @exit_status: Exit status to return
  */
 void handle_exit(char **args, char *line, int exit_status)
 {
 	free_args(args);
 	free(line);
-	exit(exit_status);
+	exit(exit_status); /* quit the program with the code exit_status */
 }
 
 /**
  * main - Entry point of the simple shell
  * @argc: Number of arguments
- * @argv: Array of arguments
+ * @argv: Array of arguments 
  *
  * Return: Exit status of last command
  */
 int main(int argc, char **argv)
 {
 	char *line = NULL;
-	size_t len = 0;
-	ssize_t nread;
+	size_t len = 0; /* unsigned + */
+	ssize_t nread; /* nb of char read */
 	int interactive, cmd_count = 1, exit_status = 0, last_status = 0;
-	char **args;
+	char **args; /* array to stock arguments */
 
 	(void)argc;
 	interactive = isatty(STDIN_FILENO);
@@ -36,7 +36,7 @@ int main(int argc, char **argv)
 		if (interactive)
 		{
 			printf("($) ");
-			fflush(stdout);
+			fflush(stdout); /* force immediate display */
 		}
 		nread = getline(&line, &len, stdin);
 		if (nread == -1)
