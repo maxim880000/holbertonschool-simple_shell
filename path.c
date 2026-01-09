@@ -21,7 +21,7 @@ char *_getenv(const char *name)
 	while (environ[i])
 	{
 		if (strncmp(environ[i], name, name_len) == 0 &&
-		    environ[i][name_len] == '=')
+		    environ[i][name_len] == '=') /* check if after the name we got a = */
 		{
 			return (environ[i] + name_len + 1);
 		}
@@ -41,12 +41,12 @@ char *check_absolute_path(char *command)
 {
 	char *dup;
 
-	if (command[0] == '/' || command[0] == '.')
+	if (command[0] == '/' || command[0] == '.') /* absolue or relatif */
 	{
-		if (access(command, X_OK) == 0)
+		if (access(command, X_OK) == 0) /* if permission of execution */
 		{
-			dup = malloc(strlen(command) + 1);
-			if (!dup)
+			dup = malloc(strlen(command) + 1); /* allocate in the heap */
+			if (!dup) /* echec */
 				return (NULL);
 			strcpy(dup, command);
 			return (dup);
@@ -65,15 +65,15 @@ char *check_absolute_path(char *command)
  */
 char *build_full_path(char *dir, char *command)
 {
-	char *fullpath;
-	int len;
+	char *fullpath; /* pointer to the final string */
+	int len; /* size of allocation */
 
 	len = strlen(dir) + strlen(command) + 2;
 	fullpath = malloc(len);
 	if (!fullpath)
 		return (NULL);
 
-	sprintf(fullpath, "%s/%s", dir, command);
+	sprintf(fullpath, "%s/%s", dir, command); /* built tthe string */
 	return (fullpath);
 }
 
