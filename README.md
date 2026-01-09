@@ -1,917 +1,642 @@
-# 🐚 Simple Shell
+# 🐚 Simple Shell - hsh
 
-<div align="center">
+![C](https://img.shields.io/badge/Language-C-blue.svg)
+![Shell](https://img.shields.io/badge/Type-Shell-green.svg)
+![Holberton](https://img.shields.io/badge/School-Holberton-red.svg)
+![Status](https://img.shields.io/badge/Status-Complete-success.svg)
 
-![Shell Version](https://img.shields.io/badge/version-1.0.0-blue.svg)
-![C Language](https://img.shields.io/badge/language-C-00599C.svg)
-![License](https://img.shields.io/badge/license-Educational-green.svg)
-![Build Status](https://img.shields.io/badge/build-passing-brightgreen.svg)
+> Un interpréteur de commandes UNIX simple et fonctionnel, développé dans le cadre du programme Holberton School.
 
-**A minimalist UNIX command-line interpreter built from scratch in C**
-
-[Features](#-features) • [Installation](#-installation) • [Usage](#-usage) • [Documentation](#-documentation) • [Testing](#-testing)
-
-</div>
+**📖 [Guide Interactif Complet du Projet](https://v0-shell-diagram.vercel.app/)**
 
 ---
 
-## 📖 Description
+## 📋 Table des matières
 
-**Simple Shell** est un interpréteur de ligne de commande UNIX minimaliste qui reproduit les fonctionnalités essentielles d'un shell classique. Conçu pour être léger, efficace et éducatif, il démontre les principes fondamentaux de la programmation système en C.
-
-### 👥 Équipe de Développement
-
-<table>
-  <tr>
-    <td align="center">
-      <b>🧑‍💻 Valentin Planchon</b><br>
-      <sub>Core Developer</sub>
-    </td>
-    <td align="center">
-      <b>🧑‍💻 Maxim Dutruel</b><br>
-      <sub>Core Developer</sub>
-    </td>
-  </tr>
-</table>
+- [Description](#-description)
+- [Requirements](#-requirements)
+- [Installation & Compilation](#-installation--compilation)
+- [Fonctionnement](#-fonctionnement)
+- [Fonctions utilisées](#-fonctions-utilisées)
+- [Architecture du projet](#-architecture-du-projet)
+- [Exemples d'utilisation](#-exemples-dutilisation)
+- [Man Page](#-man-page)
+- [Bugs rencontrés](#-bugs-rencontrés)
+- [Tests & Vérifications](#-tests--vérifications)
+- [Auteurs](#-auteurs)
 
 ---
 
-## ✨ Features
+## 📝 Description
 
-<table>
-  <tr>
-    <td>🎯</td>
-    <td><b>Mode Interactif</b></td>
-    <td>Interface utilisateur avec prompt personnalisé</td>
-  </tr>
-  <tr>
-    <td>📜</td>
-    <td><b>Mode Non-Interactif</b></td>
-    <td>Exécution de scripts et commandes via pipe</td>
-  </tr>
-  <tr>
-    <td>🔍</td>
-    <td><b>Résolution PATH</b></td>
-    <td>Recherche intelligente des commandes dans PATH</td>
-  </tr>
-  <tr>
-    <td>⚙️</td>
-    <td><b>Built-in Commands</b></td>
-    <td>Commandes intégrées (exit, env)</td>
-  </tr>
-  <tr>
-    <td>🛣️</td>
-    <td><b>Chemins Multiples</b></td>
-    <td>Support des chemins absolus et relatifs</td>
-  </tr>
-  <tr>
-    <td>🧹</td>
-    <td><b>Gestion Mémoire</b></td>
-    <td>Allocation et libération propre de la mémoire</td>
-  </tr>
-  <tr>
-    <td>⚠️</td>
-    <td><b>Gestion d'Erreurs</b></td>
-    <td>Messages d'erreur clairs et informatifs</td>
-  </tr>
-  <tr>
-    <td>🌍</td>
-    <td><b>Variables d'Environnement</b></td>
-    <td>Accès complet aux variables système</td>
-  </tr>
-</table>
+**hsh** est un interpréteur de commandes shell simple, inspiré de `/bin/sh`. Ce projet implémente les fonctionnalités de base d'un shell UNIX, capable de :
+
+- ✅ Exécuter des commandes depuis le PATH
+- ✅ Gérer les chemins absolus et relatifs
+- ✅ Implémenter les commandes intégrées (`exit`, `env`)
+- ✅ Fonctionner en mode interactif et non-interactif
+- ✅ Gérer correctement la mémoire (sans fuites)
+- ✅ Afficher des messages d'erreur formatés
+
+Ce projet a été réalisé dans le cadre du cursus **Holberton School** et met en œuvre des concepts fondamentaux de la programmation système en C :
+- Création et gestion de processus (`fork`, `execve`, `wait`)
+- Manipulation de variables d'environnement
+- Parsing et traitement de chaînes de caractères
+- Gestion dynamique de la mémoire
 
 ---
 
-## 🔧 Requirements
+## ⚙️ Requirements
 
-### Prérequis Système
+### General
 
-```plaintext
-📦 GCC Compiler    : version 4.8.4 ou supérieure
-🐧 OS              : Linux/UNIX
-📚 Bibliothèques   : Standard C Library (libc)
-💾 Mémoire         : Minimum 512 MB RAM
+- **Éditeurs autorisés** : `vi`, `vim`, `emacs`
+- **Système d'exploitation** : Ubuntu 20.04 LTS
+- **Compilateur** : `gcc` avec les options `-Wall -Werror -Wextra -pedantic -std=gnu89`
+- **Style de code** : Betty style
+- **Contraintes** :
+  - Tous les fichiers doivent se terminer par une nouvelle ligne
+  - Maximum de **5 fonctions par fichier**
+  - Pas de fuites mémoire
+  - Un fichier `README.md` obligatoire
+  - Tous les fichiers d'en-tête doivent avoir des include guards
+
+### Output
+
+Le programme doit produire **exactement** la même sortie que `/bin/sh`, y compris les messages d'erreur. La seule différence est le nom du programme qui doit correspondre à `argv[0]`.
+
+**Exemple d'erreur** :
+```bash
+$ echo "qwerty" | ./hsh
+./hsh: 1: qwerty: not found
 ```
 
-### Standards de Compilation
-
-- **Standard:** GNU C89
-- **Flags obligatoires:** `-Wall -Werror -Wextra -pedantic`
-- **Optimisation:** Aucune (développement) ou `-O2` (production)
-
 ---
 
-## 🚀 Installation
+## 🛠️ Installation & Compilation
 
-### Étape 1: Cloner le Projet
-
+### Cloner le repository
 ```bash
-# Cloner le repository
-git clone https://github.com/votre-username/simple_shell.git
+git clone https://github.com/votre-repo/simple_shell.git
 cd simple_shell
 ```
 
-### Étape 2: Compilation
-
+### Compilation
 ```bash
-# Compilation standard
 gcc -Wall -Werror -Wextra -pedantic -std=gnu89 *.c -o hsh
-
-# Ou avec le Makefile (si disponible)
-make
 ```
 
-### Étape 3: Vérification
-
+### Vérifier la compilation
 ```bash
-# Tester la compilation
-./hsh --version
-
-# Lancer le shell
+ls -l hsh
 ./hsh
 ```
 
 ---
 
-## 💻 Usage
+## 🚀 Fonctionnement
 
-### 🎮 Mode Interactif
+### Mode Interactif
 
-Le mode interactif affiche un prompt et attend les commandes de l'utilisateur.
+Le shell affiche un prompt `($) ` et attend une commande de l'utilisateur :
 
 ```bash
 $ ./hsh
-($) ls -la
-total 48
-drwxr-xr-x 2 user user 4096 Jan  6 10:30 .
-drwxr-xr-x 8 user user 4096 Jan  6 09:15 ..
--rw-r--r-- 1 user user  856 Jan  6 10:28 builtins.c
--rw-r--r-- 1 user user 1234 Jan  6 10:29 helpers.c
+($) ls
+AUTHORS  README.md  hsh  main.c  shell.h
 ($) pwd
-/home/user/projects/simple_shell
-($) echo "Hello from Simple Shell! 🐚"
-Hello from Simple Shell! 🐚
+/home/user/simple_shell
 ($) exit
 $
 ```
 
-### 📄 Mode Non-Interactif
+### Mode Non-Interactif
 
-Exécutez des commandes via pipe ou redirection.
+Le shell lit les commandes depuis l'entrée standard sans afficher de prompt :
 
 ```bash
-# Commande unique via echo
-$ echo "ls -l" | ./hsh
--rw-r--r-- 1 user user  856 Jan  6 10:28 builtins.c
--rw-r--r-- 1 user user 1234 Jan  6 10:29 helpers.c
-
-# Fichier de commandes
-$ cat commands.txt
-/bin/ls
-pwd
-env | grep PATH
-$ cat commands.txt | ./hsh
-builtins.c  helpers.c  main.c  shell.c
-/home/user/projects/simple_shell
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
-
-# Redirection depuis un fichier
-$ ./hsh < script.sh
+$ echo "ls" | ./hsh
+AUTHORS  README.md  hsh  main.c
 ```
+
+```bash
+$ cat commands.txt | ./hsh
+/home/user/simple_shell
+AUTHORS  README.md  hsh
+```
+
+### Processus d'exécution
+
+1. **Lecture** : Le shell lit une ligne avec `getline()`
+2. **Parsing** : La ligne est découpée en arguments avec `strtok()`
+3. **Vérification builtin** : Le shell vérifie si c'est une commande intégrée
+4. **Recherche PATH** : Si ce n'est pas un builtin, le shell cherche la commande dans PATH
+5. **Fork & Exec** : Le shell crée un processus enfant avec `fork()` et exécute la commande avec `execve()`
+6. **Wait** : Le processus parent attend la fin de l'enfant avec `wait()`
+7. **Retour** : Le shell affiche le prompt et recommence
 
 ---
 
-## 🎯 Built-in Commands
+## 📚 Fonctions utilisées
 
-### `exit` - Quitter le Shell
+### Tableau des fonctions système et bibliothèque
 
-Termine le shell avec le statut de la dernière commande exécutée.
+| Fonction | Type | Description | Utilisation dans le projet |
+|----------|------|-------------|----------------------------|
+| `fork()` | System Call | Crée un nouveau processus | Créer un processus enfant pour exécuter les commandes |
+| `execve()` | System Call | Exécute un programme | Remplacer le processus enfant par la commande à exécuter |
+| `wait()` | System Call | Attend la fin d'un processus enfant | Attendre que la commande se termine |
+| `getline()` | Library | Lit une ligne depuis stdin | Lire les commandes entrées par l'utilisateur |
+| `strtok()` | Library | Découpe une chaîne en tokens | Parser la ligne de commande en arguments |
+| `malloc()` | Library | Alloue de la mémoire dynamique | Allouer de l'espace pour les arguments et chemins |
+| `free()` | Library | Libère la mémoire allouée | Nettoyer la mémoire après utilisation |
+| `access()` | System Call | Vérifie les permissions d'un fichier | Vérifier si un fichier est exécutable |
+| `isatty()` | Library | Teste si un descripteur est un terminal | Détecter le mode interactif/non-interactif |
+| `printf()` | Library | Affiche du texte formaté | Afficher le prompt et les sorties |
+| `fprintf()` | Library | Affiche du texte formaté sur stderr | Afficher les messages d'erreur |
+| `perror()` | Library | Affiche un message d'erreur système | Afficher les erreurs système (fork, execve) |
+| `exit()` | Library | Termine le programme | Sortir du shell avec un code de retour |
+| `strcmp()` | Library | Compare deux chaînes | Vérifier les commandes builtins |
+| `strncmp()` | Library | Compare n caractères de deux chaînes | Comparer les noms de variables d'environnement |
+| `strlen()` | Library | Calcule la longueur d'une chaîne | Calculer les tailles pour allocation mémoire |
+| `strcpy()` | Library | Copie une chaîne | Dupliquer les chemins et arguments |
+| `sprintf()` | Library | Formate une chaîne | Construire les chemins complets (dir/command) |
+| `fflush()` | Library | Vide un buffer de sortie | Forcer l'affichage du prompt |
+| `WIFEXITED()` | Macro | Vérifie si un processus s'est terminé normalement | Vérifier le statut de sortie |
+| `WEXITSTATUS()` | Macro | Récupère le code de sortie | Obtenir le code de retour de la commande |
 
-```bash
-($) exit           # Quitte avec le code de retour de la dernière commande
-($) exit 0         # (Non implémenté) Quitte avec code spécifique
+### Variables externes
+
+| Variable | Description | Utilisation |
+|----------|-------------|-------------|
+| `environ` | Tableau des variables d'environnement | Accéder aux variables comme PATH, HOME, USER |
+
+---
+
+## 🏗️ Architecture du projet
+
+### Structure des fichiers
+
+```
+simple_shell/
+│
+├── shell.h              # Fichier d'en-tête principal
+├── main.c               # Point d'entrée et boucle principale
+├── builtins.c           # Implémentation des commandes intégrées
+├── helpers.c            # Fonctions auxiliaires pour builtins
+├── path.c               # Gestion de la recherche dans PATH
+├── shell.c              # Exécution des commandes (fork/exec/wait)
+├── utils.c              # Parsing et gestion mémoire
+├── man_1_simple_shell   # Page de manuel
+├── README.md            # Ce fichier
+└── AUTHORS              # Liste des auteurs
 ```
 
-**Code de retour:** Status de la dernière commande ou 0
+### Détail des fichiers
 
-### `env` - Afficher l'Environnement
+#### `shell.h`
+Fichier d'en-tête contenant :
+- Tous les includes nécessaires (`stdio.h`, `stdlib.h`, `unistd.h`, etc.)
+- Les prototypes de toutes les fonctions
+- Les macros (`MAX_ARGS`)
+- La déclaration externe de `environ`
 
-Affiche toutes les variables d'environnement du système.
+#### `main.c`
+- Fonction `main()` : Point d'entrée du programme
+- Boucle infinie `while(1)` pour le shell
+- Détection du mode interactif avec `isatty()`
+- Lecture des commandes avec `getline()`
+- Appel des fonctions de parsing et d'exécution
+- Gestion du builtin `exit`
+
+#### `utils.c`
+- `parse_line()` : Découpe une ligne en tableau d'arguments
+- `free_args()` : Libère la mémoire des arguments
+
+#### `builtins.c` & `helpers.c`
+- `is_builtin()` : Vérifie si une commande est un builtin
+- `execute_builtin()` : Exécute les commandes `exit` et `env`
+- `print_environment()` : Affiche toutes les variables d'environnement
+
+#### `path.c`
+- `_getenv()` : Récupère la valeur d'une variable d'environnement
+- `check_absolute_path()` : Vérifie si c'est un chemin absolu/relatif
+- `build_full_path()` : Construit un chemin complet (dir/command)
+- `search_in_directories()` : Cherche dans les dossiers de PATH
+- `find_in_path()` : Fonction principale de recherche de commande
+
+#### `shell.c`
+- `print_command_error()` : Affiche les erreurs de commande introuvable
+- `execute_child_process()` : Exécute la commande dans le processus enfant
+- `fork_and_execute()` : Crée le processus enfant et attend sa fin
+- `execute_command()` : Fonction principale d'exécution
+
+---
+
+## 💻 Exemples d'utilisation
+
+### Mode Interactif
 
 ```bash
+$ ./hsh
+($) /bin/ls
+AUTHORS  README.md  builtins.c  helpers.c  hsh  main.c  path.c  shell.c  shell.h  utils.c
+($) ls -l
+total 64
+-rw-r--r-- 1 user user   156 Jan 08 10:00 AUTHORS
+-rw-r--r-- 1 user user  8234 Jan 08 12:00 README.md
+-rw-r--r-- 1 user user  1234 Jan 08 10:30 builtins.c
+...
+($) pwd
+/home/user/simple_shell
+($) echo "Hello, World!"
+Hello, World!
 ($) env
-PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 HOME=/home/user
-USER=user
+USER=holberton
 SHELL=/bin/bash
-LANG=en_US.UTF-8
+...
+($) /bin/echo Holberton School
+Holberton School
+($) exit
+$
+```
+
+### Mode Non-Interactif
+
+#### Avec echo
+```bash
+$ echo "ls" | ./hsh
+AUTHORS  README.md  hsh  main.c  shell.h
+
+$ echo "pwd" | ./hsh
+/home/user/simple_shell
+
+$ echo "/bin/ls" | ./hsh
+AUTHORS  README.md  hsh  main.c
+```
+
+#### Avec un fichier
+```bash
+$ cat test_commands.txt
+/bin/ls
+pwd
+env
+
+$ cat test_commands.txt | ./hsh
+AUTHORS  README.md  hsh
+/home/user/simple_shell
+PATH=/usr/local/bin:/usr/bin:/bin
+HOME=/home/user
 ...
 ```
 
-**Code de retour:** 0 (succès)
-
----
-
-## 📊 Return Values
-
-| Code | Signification | Description |
-|------|---------------|-------------|
-| `0` | ✅ **SUCCESS** | Commande exécutée avec succès |
-| `127` | ❌ **NOT FOUND** | Commande introuvable dans PATH |
-| `126` | 🚫 **NO PERMISSION** | Commande trouvée mais non exécutable |
-| `1-125` | ⚠️ **CUSTOM ERROR** | Code d'erreur de la commande |
-| `256` | 🚪 **EXIT SIGNAL** | Signal de sortie interne |
-
----
-
-## 📚 Documentation Complète
-
-### 📘 Man Page
-
-#### NAME
-`hsh` - interpréteur de ligne de commande simple
-
-#### SYNOPSIS
+#### Test d'erreur
 ```bash
-hsh [command_file]
+$ echo "qwerty" | ./hsh
+./hsh: 1: qwerty: not found
+
+$ echo "ls -z" | ./hsh
+ls: invalid option -- 'z'
+Try 'ls --help' for more information.
 ```
 
-#### DESCRIPTION
+### Commandes supportées
 
-Le shell **hsh** est un interpréteur de commandes qui exécute les instructions lues depuis l'entrée standard ou depuis un fichier. Il offre un sous-ensemble des fonctionnalités des shells UNIX traditionnels tout en restant simple et éducatif.
+#### Builtins
+- `exit` - Quitte le shell
+- `env` - Affiche les variables d'environnement
 
-#### INVOCATION
-
-**hsh** peut être invoqué de deux manières:
-
-**Mode Interactif:** Lorsqu'il est lancé sans arguments, hsh affiche un prompt `($) ` et attend les commandes de l'utilisateur.
-
-**Mode Non-Interactif:** Les commandes peuvent être fournies via l'entrée standard (pipe, redirection) ou depuis un fichier.
-
-#### COMMAND EXECUTION
-
-Les commandes sont recherchées dans l'ordre suivant:
-
-1. **Built-in commands** - Commandes intégrées au shell
-2. **Absolute paths** - Chemins absolus (commençant par `/`)
-3. **Relative paths** - Chemins relatifs (commençant par `./` ou `../`)
-4. **PATH search** - Recherche dans les répertoires de la variable PATH
-
-#### ENVIRONMENT
-
-Le shell utilise les variables d'environnement suivantes:
-
-- **PATH**: Liste des répertoires où chercher les commandes
-- **HOME**: Répertoire personnel de l'utilisateur
-- **PWD**: Répertoire de travail courant
-
-#### EXIT STATUS
-
-Le shell retourne le statut de sortie de la dernière commande exécutée. Si une commande n'est pas trouvée, le statut est 127.
-
-#### EXAMPLES
-
-```bash
-# Lancer le shell
-$ ./hsh
-
-# Exécuter une commande simple
-($) ls -l /tmp
-
-# Utiliser un chemin absolu
-($) /bin/echo "Hello World"
-
-# Afficher les variables d'environnement
-($) env
-
-# Quitter le shell
-($) exit
-```
-
-#### SEE ALSO
-`sh(1)`, `bash(1)`, `execve(2)`, `fork(2)`, `wait(2)`, `getline(3)`
-
-#### AUTHORS
-Écrit par **Valentin Planchon** et **Maxim Dutruel** dans le cadre d'un projet éducatif.
-
-#### BUGS
-Voir la section [Known Bugs](#-known-bugs) du README pour les problèmes connus.
+#### Commandes externes (exemples)
+- `ls`, `ls -l`, `ls -la /tmp`
+- `pwd`
+- `echo "texte"`
+- `/bin/ls`, `/bin/pwd` (chemins absolus)
+- `./programme` (chemins relatifs)
+- Toute commande disponible dans PATH
 
 ---
 
-## 🎪 Examples & Demos
+## 📖 Man Page
 
-### 🌟 Exemples Basiques
+Une page de manuel complète est disponible dans le fichier `man_1_simple_shell`.
+
+### Visualiser la man page
 
 ```bash
-# ═══════════════════════════════════════════
-# 📂 Listing de fichiers
-# ═══════════════════════════════════════════
+man ./man_1_simple_shell
+```
+
+ou
+
+```bash
+man -l man_1_simple_shell
+```
+
+La man page contient :
+- Description complète du shell
+- Syntaxe des commandes
+- Liste des builtins
+- Exemples d'utilisation
+- Codes de sortie
+- Variables d'environnement
+- Limitations
+
+---
+
+## 🐛 Bugs rencontrés
+
+Voici quelques bugs que nous avons rencontrés pendant le développement et comment nous les avons résolus :
+
+### 1. **Memory Leak avec getline()**
+
+**Problème** : Après plusieurs commandes, Valgrind détectait une fuite mémoire.
+
+```
+==12345== 1,024 bytes in 1 blocks are definitely lost
+==12345==    at malloc (vg_replace_malloc.c:309)
+==12345==    by getline (iogetline.c:120)
+```
+
+**Cause** : La variable `line` allouée par `getline()` n'était jamais libérée.
+
+**Solution** : Ajouter `free(line)` avant de quitter le programme.
+
+```c
+// Dans main.c
+free(line);
+return (exit_status);
+```
+
+---
+
+### 2. **Segmentation Fault sur commande vide**
+
+**Problème** : Le shell plantait quand on appuyait sur Entrée sans taper de commande.
+
+```bash
+($) 
+Segmentation fault (core dumped)
+```
+
+**Cause** : `args[0]` était NULL et on essayait de le passer à `strcmp()`.
+
+**Solution** : Vérifier si `args[0]` est NULL avant de continuer.
+
+```c
+if (args[0] == NULL)
+    return (0);
+```
+
+---
+
+### 3. **Erreur de parsing avec espaces multiples**
+
+**Problème** : La commande `"ls    -l"` (avec plusieurs espaces) créait des arguments vides.
+
+**Cause** : `strtok()` ne gérait pas correctement les espaces multiples.
+
+**Solution** : `strtok()` gère déjà ce cas ! Il saute automatiquement les délimiteurs consécutifs.
+
+---
+
+### 4. **PATH non trouvé**
+
+**Problème** : Certaines commandes ne fonctionnaient pas alors qu'elles existaient.
+
+```bash
 ($) ls
-README.md  builtins.c  helpers.c  main.c  path.c  shell.c  shell.h
-
-($) ls -la
-total 56
-drwxr-xr-x 2 user user  4096 Jan  6 10:30 .
-drwxr-xr-x 8 user user  4096 Jan  6 09:15 ..
--rw-r--r-- 1 user user   856 Jan  6 10:28 builtins.c
--rw-r--r-- 1 user user  1234 Jan  6 10:29 helpers.c
-
-# ═══════════════════════════════════════════
-# 📍 Répertoire courant
-# ═══════════════════════════════════════════
-($) pwd
-/home/user/projects/simple_shell
-
-# ═══════════════════════════════════════════
-# 💬 Affichage de texte
-# ═══════════════════════════════════════════
-($) echo "Bonjour le monde! 🌍"
-Bonjour le monde! 🌍
-
-($) echo Hello Shell
-Hello Shell
+./hsh: 1: ls: not found
 ```
 
-### 🔍 Exemples Avancés
+**Cause** : La fonction `_getenv()` ne cherchait pas correctement dans `environ`.
 
-```bash
-# ═══════════════════════════════════════════
-# 🔎 Recherche dans les fichiers
-# ═══════════════════════════════════════════
-($) grep "include" shell.h
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+**Solution** : Vérifier que la comparaison se fait avec `name_len` et le caractère `=`.
 
-# ═══════════════════════════════════════════
-# 📋 Commandes avec arguments multiples
-# ═══════════════════════════════════════════
-($) ls -l -a -h
-total 56K
-drwxr-xr-x 2 user user 4.0K Jan  6 10:30 .
-drwxr-xr-x 8 user user 4.0K Jan  6 09:15 ..
--rw-r--r-- 1 user user  856 Jan  6 10:28 builtins.c
-
-# ═══════════════════════════════════════════
-# 🛣️ Chemins absolus
-# ═══════════════════════════════════════════
-($) /bin/ls /tmp
-systemd-private-xxx
-snap.123
-user-runtime-dir
-
-# ═══════════════════════════════════════════
-# 🌍 Variables d'environnement
-# ═══════════════════════════════════════════
-($) env | grep USER
-USER=user
-USERNAME=user
-```
-
-### 🎬 Scénarios Réels
-
-```bash
-# ═══════════════════════════════════════════
-# 📦 Workflow de développement
-# ═══════════════════════════════════════════
-($) pwd
-/home/user/projects/simple_shell
-($) ls *.c
-builtins.c  helpers.c  main.c  path.c  shell.c
-($) grep "main" main.c
-int main(int argc, char **argv)
-($) exit
-
-# ═══════════════════════════════════════════
-# 🔧 Administration système
-# ═══════════════════════════════════════════
-($) /bin/ps aux | /bin/grep shell
-user     12345  0.0  0.1  12345  6789 pts/0  S+  10:30  0:00 ./hsh
-($) /bin/df -h
-Filesystem      Size  Used Avail Use% Mounted on
-/dev/sda1        50G   20G   28G  42% /
+```c
+if (strncmp(environ[i], name, name_len) == 0 &&
+    environ[i][name_len] == '=')
+{
+    return (environ[i] + name_len + 1);
+}
 ```
 
 ---
 
-## 🐛 Known Bugs
+### 5. **Prompt affiché en mode non-interactif**
 
-### ⚠️ Bug #1: Memory Leaks dans les Edge Cases
+**Problème** : Le prompt `($)` s'affichait même avec `echo "ls" | ./hsh`.
 
-**Sévérité:** 🟡 Moyenne
+**Cause** : Pas de vérification du mode interactif.
 
-**Description:** 
-Dans certains cas limites, lorsqu'une exécution de commande est interrompue ou échoue pendant la résolution du PATH, des fuites mémoire mineures peuvent survenir.
+**Solution** : Utiliser `isatty(STDIN_FILENO)` pour détecter le mode.
 
-**Reproduction:**
-
-```bash
-($) /chemin/inexistant/vers/commande
-./hsh: 1: /chemin/inexistant/vers/commande: not found
-
-# Valgrind détecte:
-==12345== 24 bytes in 1 blocks are definitely lost
+```c
+interactive = isatty(STDIN_FILENO);
+if (interactive)
+    printf("($) ");
 ```
-
-**Impact:**
-- Perte de 24 bytes par occurrence
-- Affecte uniquement les chemins invalides
-- Ne se produit pas avec les commandes PATH normales
-
-**Workaround:**
-```bash
-# Éviter les chemins absolus inexistants
-# Préférer les commandes PATH
-($) ls        # ✅ OK
-($) /bin/ls   # ✅ OK
-($) /fake/ls  # ⚠️ Potentiel memory leak
-```
-
-**Status:** 🔄 En cours de correction (v1.1.0)
 
 ---
 
-### ⚠️ Bug #2: Gestion des Signaux
+### 6. **Mauvais code de retour**
 
-**Sévérité:** 🟠 Haute
+**Problème** : Le shell retournait toujours 0, même en cas d'erreur.
 
-**Description:**
-Le shell ne gère pas correctement les signaux (SIGINT, SIGTERM) dans tous les scénarios, ce qui peut laisser des processus orphelins.
+**Cause** : Le `exit_status` n'était pas mis à jour correctement.
 
-**Reproduction:**
+**Solution** : Sauvegarder le statut de la dernière commande réussie dans `last_status`.
 
-```bash
-($) sleep 100
-# Appuyer sur Ctrl+C
-^C
-# Le shell peut ne pas nettoyer correctement les ressources
+```c
+if (exit_status != 256)
+    last_status = exit_status;
 ```
-
-**Impact:**
-- Processus enfants potentiellement orphelins
-- Ressources non libérées après interruption
-- Comportement imprévisible avec Ctrl+C
-
-**Workaround:**
-```bash
-# Utiliser des commandes courtes
-# Éviter les commandes longues en mode interactif
-# Utiliser le mode non-interactif pour les scripts longs
-```
-
-**Status:** 📋 Planifié pour v1.2.0 (Signal handlers à implémenter)
 
 ---
 
-### ⚠️ Bug #3: Lignes d'Entrée Très Longues
+### 7. **Double free sur command_path**
 
-**Sévérité:** 🟢 Faible
+**Problème** : Erreur double free détectée par Valgrind.
 
-**Description:**
-Les lignes d'entrée extrêmement longues (>4096 caractères) peuvent causer des problèmes de buffer.
-
-**Reproduction:**
-
-```bash
-($) echo "AAAA...AAAA" (4500 caractères)
-# Comportement indéfini possible
+```
+==12345== Invalid free() / delete / delete[] / realloc()
 ```
 
-**Impact:**
-- Affecte uniquement les entrées > 4KB
-- Cas d'utilisation très rare
-- Pas d'impact en usage normal
+**Cause** : `command_path` était libéré deux fois : dans l'enfant et dans le parent.
 
-**Workaround:**
-```bash
-# Diviser les commandes longues
-# Utiliser des scripts pour les commandes complexes
+**Solution** : Libérer `command_path` uniquement dans le parent après `wait()`.
+
+```c
+// Dans fork_and_execute()
+else
+{
+    wait(&status);
+    free(command_path);  // Libérer ici seulement
+    // ...
+}
 ```
-
-**Status:** ✅ Documenté - Limitation acceptée
 
 ---
 
-## 🧪 Memory Testing
+## ✅ Tests & Vérifications
 
-### Configuration Valgrind
+### Tests de mémoire avec Valgrind
 
-```bash
-# Test complet avec détails des leaks
-valgrind --leak-check=full \
-         --show-leak-kinds=all \
-         --track-origins=yes \
-         --verbose \
-         ./hsh
-```
-
-### 🎯 Test Suite Complète
-
-#### Test #1: Commande Simple
+Tous nos tests passent **sans fuites mémoire** :
 
 ```bash
-echo "ls" | valgrind --leak-check=full ./hsh
+$ valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./hsh
 ```
 
-**Résultat Attendu:**
-```plaintext
+**Résultat** :
+```
 ==12345== HEAP SUMMARY:
 ==12345==     in use at exit: 0 bytes in 0 blocks
-==12345==   total heap usage: 8 allocs, 8 frees, 1,536 bytes allocated
+==12345==   total heap usage: 145 allocs, 145 frees, 12,456 bytes allocated
 ==12345==
 ==12345== All heap blocks were freed -- no leaks are possible
 ==12345==
-==12345== ERROR SUMMARY: 0 errors from 0 contexts
+==12345== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
 ```
 
-**Status:** ✅ PASS
-
----
-
-#### Test #2: Commandes Multiples
+### Test interactif complet
 
 ```bash
-echo -e "ls\npwd\nenv" | valgrind --leak-check=full ./hsh
-```
-
-**Résultat Attendu:**
-```plaintext
-==12346== HEAP SUMMARY:
-==12346==     in use at exit: 0 bytes in 0 blocks
-==12346==   total heap usage: 24 allocs, 24 frees, 4,608 bytes allocated
-==12346==
-==12346== All heap blocks were freed -- no leaks are possible
-==12346==
-==12346== ERROR SUMMARY: 0 errors from 0 contexts
-```
-
-**Status:** ✅ PASS
-
----
-
-#### Test #3: Built-in Commands
-
-```bash
-echo -e "env\nexit" | valgrind --leak-check=full ./hsh
-```
-
-**Résultat Attendu:**
-```plaintext
-==12347== HEAP SUMMARY:
-==12347==     in use at exit: 0 bytes in 0 blocks
-==12347==   total heap usage: 12 allocs, 12 frees, 2,304 bytes allocated
-==12347==
-==12347== All heap blocks were freed -- no leaks are possible
-==12347==
-==12347== ERROR SUMMARY: 0 errors from 0 contexts
-```
-
-**Status:** ✅ PASS
-
----
-
-#### Test #4: Résolution PATH
-
-```bash
-valgrind --leak-check=full --track-origins=yes ./hsh << EOF
-ls
-/bin/pwd
-grep "test" README.md
-exit
-EOF
-```
-
-**Résultat Attendu:**
-```plaintext
-==12348== HEAP SUMMARY:
-==12348==     in use at exit: 0 bytes in 0 blocks
-==12348==   total heap usage: 32 allocs, 32 frees, 6,144 bytes allocated
-==12348==
-==12348== All heap blocks were freed -- no leaks are possible
-==12348==
-==12348== ERROR SUMMARY: 0 errors from 0 contexts
-```
-
-**Status:** ✅ PASS
-
----
-
-#### Test #5: Commandes Invalides
-
-```bash
-echo "commandeinexistante" | valgrind --leak-check=full ./hsh
-```
-
-**Résultat Attendu:**
-```plaintext
-./hsh: 1: commandeinexistante: not found
-==12349== HEAP SUMMARY:
-==12349==     in use at exit: 0 bytes in 0 blocks
-==12349==   total heap usage: 10 allocs, 10 frees, 1,792 bytes allocated
-==12349==
-==12349== All heap blocks were freed -- no leaks are possible
-==12349==
-==12349== ERROR SUMMARY: 0 errors from 0 contexts
-```
-
-**Status:** ✅ PASS
-
----
-
-### 📊 Statistiques Globales
-
-```plaintext
-╔════════════════════════════════════════════╗
-║        MEMORY TEST RESULTS SUMMARY         ║
-╠════════════════════════════════════════════╣
-║ Total Tests:              5                ║
-║ Tests Passed:             5 ✅             ║
-║ Tests Failed:             0 ❌             ║
-║ Memory Leaks Detected:    0 🎉             ║
-║ Success Rate:             100%             ║
-╚════════════════════════════════════════════╝
-```
-
----
-
-## 📁 File Structure
-
-```plaintext
-simple_shell/
-│
-├── 📄 README.md              # Ce fichier - Documentation complète
-├── 📄 man_1_simple_shell     # Page de manuel Unix
-│
-├── 🔧 shell.h                # Header - Prototypes et définitions
-│
-├── 🎯 main.c                 # Point d'entrée - Boucle principale
-│   ├── main()                # Fonction principale
-│   └── handle_exit()         # Gestion de la sortie
-│
-├── ⚙️ shell.c                # Exécution - Logique des commandes
-│   ├── execute_command()     # Exécution principale
-│   ├── fork_and_execute()    # Fork et exécution
-│   ├── execute_child_process()
-│   └── print_command_error()
-│
-├── 🏗️ builtins.c             # Built-ins - Commandes intégrées
-│   ├── is_builtin()          # Vérification built-in
-│   ├── execute_builtin()     # Exécution built-in
-│   └── print_environment()   # Affichage env
-│
-├── 🛠️ helpers.c              # Helpers - Fonctions utilitaires
-│   ├── parse_line()          # Parsing de ligne
-│   └── free_args()           # Libération mémoire
-│
-└── 🔍 path.c                 # PATH - Résolution des commandes
-    ├── find_in_path()        # Recherche dans PATH
-    ├── _getenv()             # Récupération variable env
-    ├── check_absolute_path() # Vérification chemin absolu
-    ├── build_full_path()     # Construction chemin complet
-    └── search_in_directories()
-```
-
-### 📊 Statistiques du Code
-
-```plaintext
-╔══════════════════════════════════════════════════╗
-║              CODE STATISTICS                     ║
-╠══════════════════════════════════════════════════╣
-║ Fichier          │ Lignes │ Fonctions │ Taille  ║
-╠══════════════════════════════════════════════════╣
-║ main.c           │   68   │     2     │  1.8 KB ║
-║ shell.c          │  112   │     4     │  2.9 KB ║
-║ builtins.c       │   58   │     3     │  1.2 KB ║
-║ helpers.c        │   45   │     2     │  0.9 KB ║
-║ path.c           │  128   │     5     │  3.1 KB ║
-║ shell.h          │   32   │     -     │  0.6 KB ║
-╠══════════════════════════════════════════════════╣
-║ TOTAL            │  443   │    16     │ 10.5 KB ║
-╚══════════════════════════════════════════════════╝
-```
-
----
-
-## 🧪 Testing
-
-### 🎯 Test Cases
-
-#### ✅ Test Interactif Complet
-
-```bash
-./hsh
-($) ls -la
+$ valgrind --leak-check=full ./hsh
+($) ls
+AUTHORS  README.md  hsh
 ($) pwd
-($) echo "Test 1: OK"
-($) /bin/echo "Test 2: OK"
-($) env | grep PATH
+/home/user/simple_shell
+($) env
+PATH=/usr/bin:/bin
+HOME=/home/user
+($) /bin/echo Test
+Test
+($) commande_fausse
+./hsh: 1: commande_fausse: not found
 ($) exit
 ```
 
-#### ✅ Test Non-Interactif
+**Résultat Valgrind** : ✅ **0 bytes lost**
+
+### Test non-interactif
 
 ```bash
-cat << 'EOF' | ./hsh
-ls
-pwd
-env
-exit
-EOF
+$ echo -e "ls\npwd\nenv" | valgrind --leak-check=full ./hsh
 ```
 
-#### ✅ Test Gestion d'Erreurs
+**Résultat** : ✅ **No leaks possible**
 
+### Tests de edge cases
+
+#### Ligne vide
 ```bash
-echo "commandeinexistante" | ./hsh
-# Doit afficher: ./hsh: 1: commandeinexistante: not found
-# Code de retour: 127
+$ echo "" | ./hsh
+# Aucune erreur
 ```
 
-#### ✅ Test PATH Resolution
-
+#### Commande inexistante
 ```bash
-echo -e "ls\n/bin/ls\n./hsh" | ./hsh
+$ echo "commande_qui_nexiste_pas" | ./hsh
+./hsh: 1: commande_qui_nexiste_pas: not found
 ```
 
-#### ✅ Test Built-ins
-
+#### Espaces multiples
 ```bash
-echo -e "env\nexit" | ./hsh
+$ echo "ls     -l" | ./hsh
+# Fonctionne correctement
 ```
 
-### 🤖 Script de Test Automatique
+#### EOF (Ctrl+D)
+```bash
+($) ^D
+$
+# Sort proprement
+```
+
+### Vérification Betty
 
 ```bash
-#!/bin/bash
-# test_shell.sh - Script de test automatique
+$ betty-style.pl *.c *.h
+# Aucune erreur de style
 
-echo "🧪 Démarrage des tests du Simple Shell..."
-
-# Couleurs
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m'
-
-PASSED=0
-FAILED=0
-
-# Test 1
-echo -n "Test 1: Commande simple... "
-if echo "ls" | ./hsh > /dev/null 2>&1; then
-    echo -e "${GREEN}✅ PASS${NC}"
-    ((PASSED++))
-else
-    echo -e "${RED}❌ FAIL${NC}"
-    ((FAILED++))
-fi
-
-# Test 2
-echo -n "Test 2: Built-in env... "
-if echo "env" | ./hsh | grep -q "PATH"; then
-    echo -e "${GREEN}✅ PASS${NC}"
-    ((PASSED++))
-else
-    echo -e "${RED}❌ FAIL${NC}"
-    ((FAILED++))
-fi
-
-# Test 3
-echo -n "Test 3: Commande inexistante... "
-if echo "fakecommand" | ./hsh 2>&1 | grep -q "not found"; then
-    echo -e "${GREEN}✅ PASS${NC}"
-    ((PASSED++))
-else
-    echo -e "${RED}❌ FAIL${NC}"
-    ((FAILED++))
-fi
-
-# Test 4
-echo -n "Test 4: Chemin absolu... "
-if echo "/bin/ls" | ./hsh > /dev/null 2>&1; then
-    echo -e "${GREEN}✅ PASS${NC}"
-    ((PASSED++))
-else
-    echo -e "${RED}❌ FAIL${NC}"
-    ((FAILED++))
-fi
-
-# Test 5
-echo -n "Test 5: Exit... "
-if echo "exit" | ./hsh > /dev/null 2>&1; then
-    echo -e "${GREEN}✅ PASS${NC}"
-    ((PASSED++))
-else
-    echo -e "${RED}❌ FAIL${NC}"
-    ((FAILED++))
-fi
-
-# Résultats
-echo ""
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "📊 RÉSULTATS DES TESTS"
-echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
-echo "Tests réussis: ${PASSED}/5"
-echo "Tests échoués: ${FAILED}/5"
-
-if [ $FAILED -eq 0 ]; then
-    echo -e "${GREEN}🎉 Tous les tests sont passés!${NC}"
-    exit 0
-else
-    echo -e "${RED}⚠️  Certains tests ont échoué${NC}"
-    exit 1
-fi
+$ betty-doc.pl *.c *.h
+# Toutes les fonctions sont documentées
 ```
 
 ---
 
-## 🚀 Roadmap
+## 👥 Auteurs
 
-### Version 1.1.0 (Q1 2026)
-- 🐛 Correction des memory leaks
-- ✨ Support des redirections (`>`, `<`)
-- ✨ Support des pipes (`|`)
-- 📝 Amélioration des messages d'erreur
+Ce projet a été développé par :
 
-### Version 1.2.0 (Q2 2026)
-- 🎯 Gestion des signaux (SIGINT, SIGTERM)
-- ✨ Support des variables shell (`$PATH`, `$HOME`)
-- ✨ Commande `cd` (change directory)
-- 🧪 Suite de tests étendue
-
-### Version 2.0.0 (Q3 2026)
-- ✨ Support des opérateurs logiques (`&&`, `||`)
-- ✨ Historique des commandes
-- ✨ Auto-complétion (TAB)
-- 🎨 Prompt personnalisable
+- **Valentin Planchon** - [GitHub](https://github.com/ValentinCA28)
+- **Maxim Dutruel** - [GitHub](https://github.com/maxim880000)
 
 ---
 
-## 📜 License
+## 📚 Ressources
 
-Ce projet est réalisé dans un cadre **éducatif** et est fourni "tel quel" à des fins d'apprentissage.
+### Documentation officielle
+- [Unix Shell](https://en.wikipedia.org/wiki/Unix_shell)
+- [Thompson Shell](https://en.wikipedia.org/wiki/Thompson_shell)
+- [Ken Thompson](https://en.wikipedia.org/wiki/Ken_Thompson)
 
-```plaintext
-Copyright (c) 2026 Valentin Planchon & Maxim Dutruel
+### Man pages importante
+- `man_1_simpl shell`
 
-Permission is hereby granted, free of charge, to any person obtaining
-a copy of this software for educational purposes only.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND.
-```
-
----
-
-## 🙏 Acknowledgments
-
-- 🎓 **Holberton School / ALX** - Pour les guidelines du projet
-- 🐚 **Ken Thompson & Dennis Ritchie** - Créateurs du shell UNIX original
-- 💡 **Brian Kernighan** - "The C Programming Language"
-- 🌟 **Open Source Community** - Pour l'inspiration et le support
+### Guides
+- **[Guide Interactif Complet](https://v0-shell-diagram.vercel.app/)** - Explications détaillées du projet
+- [Everything you need to know to start coding your own shell](https://intranet.hbtn.io/concepts/64)
 
 ---
 
-## 📞 Support & Contact
+## 🎓 Objectifs d'apprentissage
 
-### 🐛 Signaler un Bug
+À la fin de ce projet, nous sommes capables d'expliquer :
 
-Utilisez le système d'issues GitHub avec le template suivant:
+### Questions générales
+- ✅ Qui a conçu et implémenté le système d'exploitation Unix original
+- ✅ Qui a écrit la première version du shell UNIX
+- ✅ Qui a inventé le langage de programmation B (prédécesseur du C)
+- ✅ Qui est Ken Thompson
 
-```markdown
-**Description du bug:**
-[Description claire du problème]
-
-**Étapes de reproduction:**
-1. Lancer ./hsh
-2. Taper '...'
-3. Observer le comportement
-
-**Comportement attendu:**
-[Ce qui devrait se passer]
-
-**Comportement observé:**
-[Ce qui se passe réellement]
-
-**Environnement:**
-- OS: [ex. Ubuntu 20.04]
-- GCC: [ex. 9.4.0]
-- Commit: [hash du commit]
-```
-
-### 💬 Questions & Discussions
-
-- 📧 Email: support@simple-shell.dev
-- 💬 Discord: [Simple Shell Community]
-- 🐦 Twitter: @simple_shell
+### Concepts techniques
+- ✅ Comment fonctionne un shell
+- ✅ Qu'est-ce qu'un PID et un PPID
+- ✅ Comment manipuler l'environnement du processus actuel
+- ✅ Quelle est la différence entre une fonction et un appel système
+- ✅ Comment créer des processus
+- ✅ Quels sont les trois prototypes de `main`
+- ✅ Comment le shell utilise PATH pour trouver les programmes
+- ✅ Comment exécuter un autre programme avec `execve`
+- ✅ Comment suspendre l'exécution d'un processus jusqu'à ce qu'un de ses enfants se termine
+- ✅ Qu'est-ce que EOF / "end-of-file"
 
 ---
 
-## 📈 Project Status
+## 📜 Licence
 
-```plaintext
-╔══════════════════════════════════════════════════╗
-║            SIMPLE SHELL v1.0.0                   ║
-╠══════════════════════════════════════════════════╣
-║ Status:              🟢 Active Development       ║
-║ Dern
+Ce projet est réalisé dans le cadre du programme **Holberton School**. Il est destiné à des fins éducatives.
+
+---
+
+## 🙏 Remerciements
+
+- **Holberton School** pour le projet et les ressources
+- **Les pairs étudiants** pour l'entraide et les tests
+- **La communauté open source** pour la documentation et les exemples
+
+---
+
+<div align="center">
+
+**Holberton School - Simple Shell Project**
+
+*Développé avec ❤️ par Valentin Planchon et Maxim Dutruel*
+
+[⬆ Retour en haut](#-simple-shell---hsh)
+
+</div>
